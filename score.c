@@ -83,7 +83,7 @@ void ScoreGatherInput(bool* Continue)
 
 void ScoreDoLogic(bool* Continue, bool* Error, Uint32 Milliseconds)
 {
-	AdvanceBackground(Milliseconds);
+	AdvanceBackground(Milliseconds, BgScrollMultiplier);
 }
 
 void ScoreOutputFrame()
@@ -249,4 +249,3 @@ uint32_t GetHighScore()
 
 	return hs;
 }
-

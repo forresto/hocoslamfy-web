@@ -16,7 +16,7 @@ emcc -O2 \
     -s SDL2_IMAGE_FORMATS='["png"]' \
     -s USE_SDL_MIXER=2 \
     --preload-file data \
-    -s EXPORTED_FUNCTIONS='["_main","_TriggerBoostDown","_TriggerBoostUp","_SetMusicMuted","_SetSFXMuted"]' \
+    -s EXPORTED_FUNCTIONS='["_main","_TriggerBoostDown","_TriggerBoostUp","_SetMusicMuted","_SetSFXMuted","_SetFieldScrollMultiplier"]' \
     -s EXPORTED_RUNTIME_METHODS='["cwrap","ccall"]' \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s ENVIRONMENT=web \

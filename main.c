@@ -30,6 +30,7 @@
 #include "init.h"
 #include "audio.h"
 #include "platform.h"
+#include "game.h"
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 
@@ -59,7 +60,7 @@ static void em_loop(void) {
 
 	GatherInput(&Continue);
 	if (!Continue) { emscripten_cancel_main_loop(); return; }
-	DoLogic(&Continue, &Error, duration);
+	DoLogic(&Continue, &Error, (Uint32)(duration * FieldScrollMultiplier));
 	if (!Continue) { emscripten_cancel_main_loop(); return; }
 	OutputFrame();
 }

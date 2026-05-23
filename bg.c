@@ -52,12 +52,12 @@ static const uint32_t BG_Height[BG_LAYER_COUNT] = {
 	 32,  20,  28,  36
 };
 
-void AdvanceBackground(uint32_t Milliseconds)
+void AdvanceBackground(uint32_t Milliseconds, float ScrollMult)
 {
 	uint32_t i;
 	for (i = 0; i < BG_LAYER_COUNT; i++)
 	{
-		BG_X[i] = fmodf(BG_X[i] + BG_Speed[i] * Milliseconds / 1000, FIELD_WIDTH * 0.5f);
+		BG_X[i] = fmodf(BG_X[i] + BG_Speed[i] * ScrollMult * Milliseconds / 1000, FIELD_WIDTH * 0.5f);
 	}
 }
 

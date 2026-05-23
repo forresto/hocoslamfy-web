@@ -26,6 +26,10 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include "main.h"
 #include "init.h"
 #include "platform.h"
@@ -34,6 +38,16 @@
 #include "bg.h"
 #include "text.h"
 #include "audio.h"
+
+float                         FieldScrollMultiplier = 1.0f;
+float                         BgScrollMultiplier = 1.0f;
+
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE void SetFieldScrollMultiplier(float m) {
+	FieldScrollMultiplier = m;
+	BgScrollMultiplier = m + (m-1) * 5;
+}
+#endif
 
 static uint32_t               Score;
 
@@ -267,7 +281,7 @@ void GameDoLogic(bool* Continue, bool* Error, Uint32 Milliseconds)
 			}
 		}
 
-		AdvanceBackground(Milliseconds);
+		AdvanceBackground(Milliseconds, BgScrollMultiplier);
 	}
 	else if (PlayerStatus == DYING)
 	{

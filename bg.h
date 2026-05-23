@@ -32,7 +32,7 @@
 #define BG_SPEED_4     (-FIELD_SCROLL * 1 / 3)
 #define BG_SPEED_5     (-FIELD_SCROLL * 1 / 2)
 
-extern void AdvanceBackground(uint32_t Milliseconds);
+extern void AdvanceBackground(uint32_t Milliseconds, float ScrollMult);
 extern void DrawBackground(void);
 
 #endif /* !defined(_BG_H_) */

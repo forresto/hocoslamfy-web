@@ -102,7 +102,7 @@ static void AnimationControl(Uint32 Milliseconds)
 void TitleScreenDoLogic(bool* Continue, bool* Error, Uint32 Milliseconds)
 {
 	AnimationControl(Milliseconds);
-	AdvanceBackground(Milliseconds);
+	AdvanceBackground(Milliseconds, BgScrollMultiplier);
 }
 
 void TitleScreenOutputFrame()

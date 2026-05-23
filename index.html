@@ -140,6 +140,10 @@
           <button data-val="0">SFX: OFF</button>
           <button data-val="1" class="active">SFX: ON</button>
         </div>
+        <div class="btn-group" id="speed-group">
+          <button data-val="1" class="active">1x</button>
+          <button data-val="1.25">turbo</button>
+        </div>
         <span id="keyboard-hint"
           >Space/Enter = fly &bull; P = pause &bull;
           <a href="https://github.com/forresto/hocoslamfy">src</a></span
@@ -166,6 +170,7 @@
           var boostUp = Module.cwrap("TriggerBoostUp", null, []);
           var setMusic = Module.cwrap("SetMusicMuted", null, ["number"]);
           var setSFX = Module.cwrap("SetSFXMuted", null, ["number"]);
+          var setScrollSpeed = Module.cwrap("SetFieldScrollMultiplier", null, ["number"]);
 
           // boost button
           var btn = document.getElementById("boost-btn");
@@ -224,15 +229,18 @@
                 b.classList.remove("active");
               });
               target.classList.add("active");
-              onChange(parseInt(target.dataset.val, 10));
+              onChange(target.dataset.val);
             });
           }
 
           makeGroup("music-group", function (val) {
-            setMusic(val === 0 ? 1 : 0);
+            setMusic(parseInt(val, 10) === 0 ? 1 : 0);
           });
           makeGroup("sfx-group", function (val) {
-            setSFX(val === 0 ? 1 : 0);
+            setSFX(parseInt(val, 10) === 0 ? 1 : 0);
+          });
+          makeGroup("speed-group", function (val) {
+            setScrollSpeed(parseFloat(val));
           });
         },
 

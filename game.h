@@ -119,6 +119,8 @@ enum PlayerStatus
 	DYING
 };
 
+extern float FieldScrollMultiplier;
+extern float BgScrollMultiplier;
 extern void ToGame(void);
 
 #endif /* !defined(_GAME_H_) */
