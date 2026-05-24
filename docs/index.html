@@ -160,7 +160,10 @@
     <div id="status"></div>
 
     <script>
-      var Module = {
+      const myModule = {
+        locateFile: function (path) {
+          return "./generated/" + path;
+        },
         canvas: document.getElementById("canvas"),
         print: function (text) {
           console.log(text);
@@ -172,14 +175,14 @@
         onRuntimeInitialized: function () {
           document.getElementById("status").textContent = "";
 
-          var boostDown = Module.cwrap("TriggerBoostDown", null, []);
-          var boostUp = Module.cwrap("TriggerBoostUp", null, []);
-          var setMusic = Module.cwrap("SetMusicMuted", null, ["number"]);
-          var setSFX = Module.cwrap("SetSFXMuted", null, ["number"]);
-          var setScrollSpeed = Module.cwrap("SetFieldScrollMultiplier", null, ["number"]);
+          const boostDown = Module.cwrap("TriggerBoostDown", null, []);
+          const boostUp = Module.cwrap("TriggerBoostUp", null, []);
+          const setMusic = Module.cwrap("SetMusicMuted", null, ["number"]);
+          const setSFX = Module.cwrap("SetSFXMuted", null, ["number"]);
+          const setScrollSpeed = Module.cwrap("SetFieldScrollMultiplier", null, ["number"]);
 
           // boost button
-          var btn = document.getElementById("boost-btn");
+          const btn = document.getElementById("boost-btn");
           function down(e) {
             e.preventDefault();
             btn.classList.add("pressed");
@@ -198,7 +201,7 @@
           btn.addEventListener("touchcancel", up);
 
           // canvas taps
-          var canvas = document.getElementById("canvas");
+          const canvas = document.getElementById("canvas");
           canvas.addEventListener("mousedown", function () {
             boostDown();
           });
@@ -225,27 +228,48 @@
             boostUp();
           });
 
+          // prefs
+          const PREFS_KEY = "hocoslamfy_prefs";
+          const defaultPrefs = { music: 0, sfx: 1, speed: 1.5 };
+          const prefs = Object.assign(
+            {},
+            defaultPrefs,
+            JSON.parse(localStorage.getItem(PREFS_KEY) || "null"),
+          );
+          function savePrefs() {
+            localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+          }
+
           // generic segmented control handler
-          function makeGroup(id, onChange) {
-            var group = document.getElementById(id);
+          function makeGroup(id, prefKey, onChange) {
+            const group = document.getElementById(id);
+            const savedVal = String(prefs[prefKey]);
+            group.querySelectorAll("button").forEach(function (b) {
+              b.classList.toggle("active", b.dataset.val === savedVal);
+            });
+            setTimeout(function () {
+              onChange(savedVal);
+            }, 0);
             group.addEventListener("click", function (e) {
-              var target = e.target.closest("button");
+              const target = e.target.closest("button");
               if (!target) return;
               group.querySelectorAll("button").forEach(function (b) {
                 b.classList.remove("active");
               });
               target.classList.add("active");
+              prefs[prefKey] = Number(target.dataset.val);
+              savePrefs();
               onChange(target.dataset.val);
             });
           }
 
-          makeGroup("music-group", function (val) {
+          makeGroup("music-group", "music", function (val) {
             setMusic(parseInt(val, 10) === 0 ? 1 : 0);
           });
-          makeGroup("sfx-group", function (val) {
+          makeGroup("sfx-group", "sfx", function (val) {
             setSFX(parseInt(val, 10) === 0 ? 1 : 0);
           });
-          makeGroup("speed-group", function (val) {
+          makeGroup("speed-group", "speed", function (val) {
             setScrollSpeed(parseFloat(val));
           });
         },
@@ -254,6 +278,8 @@
           if (text) document.getElementById("status").textContent = text;
         },
       };
+
+      var Module = Object.assign({}, myModule, window.Module ?? {});
     </script>
     <script>
       window.addEventListener(
@@ -268,47 +294,38 @@
       );
     </script>
     <script>
-      var splashImg = new Image();
+      const splashImg = new Image();
       splashImg.src = "./hocoslamfy-start-screen.png";
       splashImg.onload = function () {
-        var ctx = document.getElementById("canvas").getContext("2d");
+        const ctx = document.getElementById("canvas").getContext("2d");
         ctx.drawImage(splashImg, 0, 0, 320, 240);
       };
 
-      var wasmLoaded = false;
+      let wasmLoaded = false;
       function startWasm() {
         if (wasmLoaded) return;
         wasmLoaded = true;
 
-        window.Module = window.Module || {};
-        window.Module.locateFile = function (path) {
-          return "generated/" + path;
-        };
-        var s = document.createElement("script");
+        // window.Module = window.Module || {};
+        // window.Module.locateFile = function (path) {
+        //   return "generated/" + path;
+        // };
+        const s = document.createElement("script");
         s.src = "./generated/hocoslamfy.js";
         document.body.appendChild(s);
 
         // Clean up
         document.getElementById("meta").style.display = "flex";
-        var boostBtn = document.getElementById("boost-btn");
+        const boostBtn = document.getElementById("boost-btn");
         boostBtn.textContent = "FLY";
-        boostBtn.removeEventListener("mousedown", startWasm);
-        boostBtn.removeEventListener("touchstart", startWasm, { passive: true });
-        var canvas = document.getElementById("canvas");
-        canvas.removeEventListener("mousedown", startWasm);
-        canvas.removeEventListener("touchstart", startWasm, { passive: true });
+        window.removeEventListener("click", startWasm);
       }
 
-      var canvas = document.getElementById("canvas");
-      canvas.addEventListener("mousedown", startWasm);
-      canvas.addEventListener("touchstart", startWasm, { passive: true });
-
-      var boostBtn = document.getElementById("boost-btn");
-      boostBtn.addEventListener("mousedown", startWasm);
-      boostBtn.addEventListener("touchstart", startWasm, { passive: true });
+      window.addEventListener("click", startWasm);
 
       const hs = window.localStorage.getItem("hocoslamfy_highscore");
       if (hs) {
+        const boostBtn = document.getElementById("boost-btn");
         boostBtn.textContent = "HIGH SCORE: " + hs;
       }
     </script>
