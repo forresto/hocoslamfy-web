@@ -1,4 +1,4 @@
-# hocoslamfy
+hocoslamfy
 
 You are a small bee and you must fly to avoid the bamboo shoots!
 
@@ -16,4 +16,8 @@ The wasm version felt pretty slow compared to GKD350H, so I added a 1.5x "turbo"
 
 High score should save to your browser storage.
 
-Compile with
+Compile (with [emsdk](https://emscripten.org/docs/getting_started/downloads.html) available):
+
+```
+EMSDK_DIR=~/src/emsdk bash ./build-wasm.sh
+```
