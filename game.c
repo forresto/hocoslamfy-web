@@ -45,7 +45,7 @@ float                         BgScrollMultiplier = 1.0f;
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE void SetFieldScrollMultiplier(float m) {
 	FieldScrollMultiplier = m;
-	BgScrollMultiplier = m + (m-1) * 5;
+	BgScrollMultiplier = m + (m-1) * 2;
 }
 #endif
 

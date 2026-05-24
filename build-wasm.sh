@@ -2,9 +2,12 @@
 set -e
 
 if ! command -v emcc &>/dev/null; then
-    echo "Error: emcc not found."
-    echo "Install Emscripten SDK: https://emscripten.org/docs/getting_started/downloads.html"
-    exit 1
+    if [ -n "$EMSDK_DIR" ] && [ -f "$EMSDK_DIR/emsdk_env.sh" ]; then
+        source "$EMSDK_DIR/emsdk_env.sh"
+    else
+        echo "Error: emcc not found. Set EMSDK_DIR or activate emsdk first."
+        exit 1
+    fi
 fi
 
 SRCS="main.c init.c title.c game.c score.c audio.c bg.c text.c unifont.c platform/general.c"
@@ -25,4 +28,4 @@ emcc -O2 \
     $SRCS
 
 echo "Build complete: hocoslamfy.js + hocoslamfy.wasm + hocoslamfy.data"
-echo "Serve with: python3 -m http.server 8000"
+echo "Serve with: npx serve ."
